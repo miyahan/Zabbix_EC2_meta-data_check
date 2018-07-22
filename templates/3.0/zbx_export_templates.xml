@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>3.0</version>
+    <date>2018-07-22T03:05:43Z</date>
+    <groups>
+        <group>
+            <name>Miyahan Templates</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>AWS EC2 meta-data check</template>
+            <name>AWS EC2 meta-data check</name>
+            <description/>
+            <groups>
+                <group>
+                    <name>Miyahan Templates</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>EC2 meta-data</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>EC2 instance state</name>
+                    <type>10</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>get_ec2_status.py[-r,{$REGION},-a,{$KEY},-s,{$SECRET},-i,{$EC2_INSTANCEID}]</key>
+                    <delay>180</delay>
+                    <history>90</history>
+                    <trends>0</trends>
+                    <status>0</status>
+                    <value_type>1</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>EC2 meta-data</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                </item>
+                <item>
+                    <name>EC2 instance-id</name>
+                    <type>7</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>system.run[curl -s -f http://169.254.169.254/latest/meta-data/instance-id]</key>
+                    <delay>600</delay>
+                    <history>90</history>
+                    <trends>0</trends>
+                    <status>0</status>
+                    <value_type>1</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>EC2 meta-data</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                </item>
+            </items>
+            <discovery_rules/>
+            <macros>
+                <macro>
+                    <macro>{$EC2_INSTANCEID}</macro>
+                    <value>unknown</value>
+                </macro>
+                <macro>
+                    <macro>{$KEY}</macro>
+                    <value/>
+                </macro>
+                <macro>
+                    <macro>{$METADATA_CHECK_TIMEOUT}</macro>
+                    <value>1800</value>
+                </macro>
+                <macro>
+                    <macro>{$REGION}</macro>
+                    <value/>
+                </macro>
+                <macro>
+                    <macro>{$SECRET}</macro>
+                    <value/>
+                </macro>
+            </macros>
+            <templates/>
+            <screens/>
+        </template>
+    </templates>
+    <triggers>
+        <trigger>
+            <expression>{AWS EC2 meta-data check:system.run[curl -s -f http://169.254.169.254/latest/meta-data/instance-id].diff()}=1</expression>
+            <name>{HOST.NAME} EC2 instance-id was changed</name>
+            <url/>
+            <status>0</status>
+            <priority>0</priority>
+            <description/>
+            <type>0</type>
+            <dependencies/>
+        </trigger>
+        <trigger>
+            <expression>{AWS EC2 meta-data check:get_ec2_status.py[-r,{$REGION},-a,{$KEY},-s,{$SECRET},-i,{$EC2_INSTANCEID}].diff()}=1</expression>
+            <name>{HOST.NAME} EC2 instance state was changed</name>
+            <url/>
+            <status>0</status>
+            <priority>0</priority>
+            <description/>
+            <type>0</type>
+            <dependencies/>
+        </trigger>
+        <trigger>
+            <expression>{AWS EC2 meta-data check:get_ec2_status.py[-r,{$REGION},-a,{$KEY},-s,{$SECRET},-i,{$EC2_INSTANCEID}].regexp(^stopped$)}=1</expression>
+            <name>{HOST.NAME} EC2 instance was stopped</name>
+            <url/>
+            <status>0</status>
+            <priority>0</priority>
+            <description/>
+            <type>1</type>
+            <dependencies/>
+        </trigger>
+        <trigger>
+            <expression>{AWS EC2 meta-data check:get_ec2_status.py[-r,{$REGION},-a,{$KEY},-s,{$SECRET},-i,{$EC2_INSTANCEID}].regexp(^terminated$)}=1</expression>
+            <name>{HOST.NAME} EC2 instance was terminated</name>
+            <url/>
+            <status>0</status>
+            <priority>0</priority>
+            <description/>
+            <type>0</type>
+            <dependencies/>
+        </trigger>
+    </triggers>
+</zabbix_export>
